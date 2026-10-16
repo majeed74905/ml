@@ -1,0 +1,10 @@
+# Integrated Technologies (AML) Lab - Python dependencies
+# Recommended interpreter: Python 3.11 (64-bit)
+# Install with: python -m pip install -r requirements.txt
+
+numpy==1.26.4
+pandas==2.2.3
+matplotlib==3.8.4
+seaborn==0.13.2
+scikit-learn==1.4.2
+tensorflow==2.15.1
