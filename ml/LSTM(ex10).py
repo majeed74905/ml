@@ -1,4 +1,3 @@
-```python
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.datasets import imdb
@@ -78,4 +77,3 @@ plt.title("LSTM Model Accuracy")
 plt.legend()
 plt.grid(True)
 plt.show()
-```
