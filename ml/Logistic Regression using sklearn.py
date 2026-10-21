@@ -1,59 +1,32 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-from google.colab import files
+import pandas as pd 
+from matplotlib import pyplot as plt 
 import io
+from google.colab import files
+from sklearn.model_selection import train_test_split 
+from sklearn.linear_model import LogisticRegression 
+from sklearn.metrics import classification_report 
 
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
-
-# Prompt user to upload 'breastcancer.csv' from their local machine
-print("Please upload your 'breastcancer.csv' file:")
+# Upload the CSV file directly from your local machine
+print("Please upload 'insurance_data.csv' when prompted:")
 uploaded = files.upload()
 
-# Read the uploaded CSV
+# Dynamically get the uploaded filename
 filename = list(uploaded.keys())[0]
-df = pd.read_csv(io.BytesIO(uploaded[filename]))
 
-# Display data
+# Read the uploaded CSV file
+df = pd.read_csv(io.BytesIO(uploaded[filename])) 
 display(df.head())
+ 
+plt.scatter(df.age,df.bought_insurance,marker='+',color='red') 
+plt.show() 
 
-# Convert diagnosis
-df["diagnosis"] = df["diagnosis"].map({"M": 1, "B": 0})
+x_train,x_test,y_train,y_test=train_test_split(df[['age']],df.bought_insurance, train_size=0.8, random_state=42) 
+model=LogisticRegression() 
+model.fit(x_train,y_train) 
 
-# Features and target
-# Drop non-feature columns; checking if 'Unnamed: 32' exists before dropping
-cols_to_drop = [col for col in ["diagnosis", "id", "Unnamed: 32"] if col in df.columns]
-X = df.drop(cols_to_drop, axis=1)
-y = df["diagnosis"]
+y_predicted=model.predict(x_test) 
+print("Prediction probabilities:\n", model.predict_proba(x_test)) 
+print("Model score:", model.score(x_test,y_test)) 
 
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
-
-# Random Forest
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-
-# Train
-model.fit(X_train, y_train)
-
-# Predict
-y_pred = model.predict(X_test)
-
-# Accuracy
-print("Accuracy:", accuracy_score(y_test, y_pred))
-
-# Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-
-print("Confusion Matrix:")
-print(cm)
-
-# Plot
-plt.imshow(cm)
-plt.title("Random Forest - Breast Cancer")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.colorbar()
-plt.show()
+classification_rep=classification_report(y_test,y_predicted) 
+print("Classification Report:\n", classification_rep)
